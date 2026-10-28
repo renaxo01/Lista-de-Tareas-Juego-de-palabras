@@ -37,8 +37,9 @@ export const TasksApp = () => {
   };
 
   const deleteTodo = (id: number) => {
-    console.log('Eliminar tarea', id);
 
+      const updatedTodo = todos.filter(todo => todo.id !== id)
+      setTodos(updatedTodo)
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
