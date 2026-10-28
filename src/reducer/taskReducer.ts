@@ -1,0 +1,75 @@
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
+}
+
+interface TaskState {
+    todos: Todo[],
+    length: number,
+    completed: number,
+    pending:number
+}
+ 
+export type TaskAction =
+    | { type: 'ADD_TODO', payload:string }
+    | { type: 'TOGGLE_TODO', payload:number }
+    | { type: 'DELETE_TODO' , payload:number}
+
+
+
+export const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
+    
+    switch (action.type) {
+        case 'ADD_TODO': {
+            const newTodo: Todo = {
+          id: Date.now(),
+          text: action.payload,
+          completed : false,
+      }
+            return {
+                ...state,
+                todos: [...state.todos, newTodo],
+                length: state.todos.length + 1,
+                pending: state.todos.length + 1,
+
+        }
+        }
+            
+        case 'DELETE_TODO': {
+            
+            const updatedTodo = state.todos.filter(todo => todo.id !== action.payload)
+            return {
+                ...state,
+                todos: updatedTodo,
+                length: updatedTodo.length,
+                completed: updatedTodo.filter(todo => todo.completed === true).length,
+                pending : updatedTodo.filter(todo => !todo.completed === true).length,
+            };
+        }
+            
+        case 'TOGGLE_TODO': {
+            const updatedTodo = state.todos.map(todo => {
+          if (todo.id === action.payload) {
+            return {...todo,completed:!todo.completed}
+          }
+          return todo
+            })
+            return {
+                ...state,
+                todos: updatedTodo,
+                completed:updatedTodo.filter(todo => todo.completed === true).length,
+                pending: updatedTodo.filter(todo =>!todo.completed === true).length,
+
+            };
+        }
+            
+        default:
+            return state;
+    }
+
+
+
+  
+     
+}
